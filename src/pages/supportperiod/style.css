@@ -1,0 +1,23 @@
+.addButton {
+  float: right;
+}
+
+.high {
+  color: red;
+}
+
+.medium {
+  color: orange;
+}
+
+.low {
+  color: green;
+}
+
+.content {
+  padding: 15px;
+}
+
+.image {
+  display: inline-block;
+}

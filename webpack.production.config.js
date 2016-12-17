@@ -13,7 +13,9 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('style.css', { allChunks: true })
+    new ExtractTextPlugin('style.css', { allChunks: true })//,
+    // new webpack.DefinePlugin({'__API_URL__': JSON.stringify('http://localhost:8000')})
+    // new webpack.DefinePlugin({'__API_URL__': JSON.stringify('http://104.131.150.111:8080')})
   ],
 
   module: {

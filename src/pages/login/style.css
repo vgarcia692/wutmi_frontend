@@ -12,9 +12,9 @@
   font-size: 3vw;
 }
 
-.signUpButton {
+.logInButton {
   display: inline-block;
-  padding: 1vw 2vw;
+  /*padding: 1vw 2vw;*/
   border: 0;
   font-size: 2vw;
 

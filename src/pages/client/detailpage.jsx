@@ -75,7 +75,6 @@ export default class ClientDetailPage extends React.Component {
 
   componentDidMount() {
     this.getData();
-    console.log(sessionStorage.getItem('clientTabKey'));
   }
   
   getData() {
@@ -151,7 +150,7 @@ export default class ClientDetailPage extends React.Component {
   }
 
   handleTabSelect(eventKey) {
-    event.preventDefault();
+    // event.preventDefault();
     sessionStorage.setItem('clientTabKey',parseInt(eventKey));
   }
 

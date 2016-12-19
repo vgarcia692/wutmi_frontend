@@ -330,10 +330,16 @@ export default class NewCasefileModal extends React.Component{
 
     const ExpirationDateForm = (() => (
         this.state.supportperiod['protection_order_at_referral'] ?
-          <FormGroup controlId="protection_expiration_date_at_referral">
-            <ControlLabel>Protection Order Expiration Date</ControlLabel>
-            <FormControl type="date"/>
-          </FormGroup>
+          Constants.IsFirefox ?
+            <FormGroup controlId="protection_expiration_date_at_referral">
+              <ControlLabel>Protection Order Expiration Date</ControlLabel>
+              <FormControl type="date" onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)"/>
+            </FormGroup>
+          :
+            <FormGroup controlId="protection_expiration_date_at_referral">
+              <ControlLabel>Protection Order Expiration Date</ControlLabel>
+              <FormControl type="date" onChange={this.handleChange}/>
+            </FormGroup>
         :
           ''
     ));
@@ -347,10 +353,18 @@ export default class NewCasefileModal extends React.Component{
           <form>
              <Tabs defaultActiveKey={1} id='uncontrolled-tab'>
               <Tab eventKey={1} title='Referral Details'>
-                <FormGroup controlId="date_of_referral">
-                    <ControlLabel>Date of Referral</ControlLabel>
-                    <FormControl type="date" onChange={this.handleChange}/>
-                  </FormGroup>
+                  {
+                    Constants.IsFirefox ?
+                      <FormGroup controlId="date_of_referral">
+                        <ControlLabel>Date of Referral</ControlLabel>
+                        <FormControl type="date" onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)"/>
+                      </FormGroup>
+                    :
+                      <FormGroup controlId="date_of_referral">
+                        <ControlLabel>Date of Referral</ControlLabel>
+                        <FormControl type="date" onChange={this.handleChange}/>
+                      </FormGroup>
+                  }
                   <FormGroup controlId="referrer">
                     <ControlLabel>Select Referrer</ControlLabel>
                     <FormControl componentClass="select" onChange={this.handleChange}>

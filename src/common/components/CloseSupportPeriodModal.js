@@ -135,11 +135,19 @@ export default class CloseSupportPeriodModal extends React.Component{
             <FormGroup>
               <ControlLabel>Closure Form</ControlLabel>
               <FormControl id="closure_form" type="file" onChange={this.handleChange} accept=".pdf"/>
-            </FormGroup>            
-            <FormGroup controlId="closure_date">
-              <ControlLabel>Closure Date</ControlLabel>
-              <FormControl type="date" onChange={this.handleChange} />
-            </FormGroup>
+            </FormGroup> 
+            {
+              Constants.IsFirefox ?
+                <FormGroup controlId="closure_date">
+                  <ControlLabel>Closure Date</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-11-09)"/>
+                </FormGroup>
+              :
+                <FormGroup controlId="closure_date">
+                  <ControlLabel>Closure Date</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange} />
+                </FormGroup>
+            }           
             <FormGroup controlId="closure_reason">
               <ControlLabel>Closure Reason</ControlLabel>
               <FormControl componentClass="select" onChange={this.handleChange}>

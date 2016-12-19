@@ -7,7 +7,6 @@ import NewClientForm from '../../common/components/NewClientForm';
 import LoadingGifModal from '../../common/components/LoadingGifModal';
 import dateFormat from 'dateFormat';
 
-
 export default class ClientListPage extends React.Component {
   constructor() {
     super()

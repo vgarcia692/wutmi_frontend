@@ -231,7 +231,7 @@ export default class SupportPeriodDetailPage extends React.Component {
               </div>
               <h2>User of Violence</h2>
               <div className={styles.content}>
-                <Button disabled bsStyle="success" className={styles.addButton}>+</Button>
+                {/*<Button disabled bsStyle="success" className={styles.addButton}>+</Button>*/}
                 <Table striped bordered hover>
                   <thead>
                     <tr>
@@ -240,7 +240,7 @@ export default class SupportPeriodDetailPage extends React.Component {
                       <td>Gender</td>
                       <td>Nationality</td>
                       <td>Relationship to Client</td>
-                      <td></td>
+                      {/*<td></td>*/}
                     </tr>
                   </thead>
                   <tbody>
@@ -252,7 +252,7 @@ export default class SupportPeriodDetailPage extends React.Component {
                           <td>{uov.gender}</td>
                           <td>{uov.nationality.type}</td>
                           <td>{uov.relationship_to_client.type}</td>
-                          <td><Button disabled>Edit</Button></td>
+                          {/*<td><Button disabled>Edit</Button></td>*/}
                         </tr>
                       ))
                     }
@@ -280,7 +280,7 @@ export default class SupportPeriodDetailPage extends React.Component {
                         <p>{casenote.follow_up_description != null ? casenote.follow_up_description : ''}</p>
                         <i><p>{casenote.follow_up_date != null ? dateFormat(casenote['follow_up_date'], 'fullDate'): ''}</p></i> 
                       
-                        <Button disabled>Edit</Button>
+                        {/*<Button disabled>Edit</Button>*/}
                       </Panel>
                     ))
                   }

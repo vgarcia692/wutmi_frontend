@@ -330,10 +330,18 @@ export default class NewCasenoteModal extends React.Component{
                 {this.state.services}
               </FormControl>
             </FormGroup>
-            <FormGroup controlId="follow_up_date">
-              <ControlLabel>Follow Up Date</ControlLabel><HelpBlock>Example: 11/09/2016</HelpBlock>
-              <FormControl type="date" onChange={this.handleChange}/>
-            </FormGroup>
+            {
+              Constants.IsFirefox ?
+                <FormGroup controlId="follow_up_date">
+                  <ControlLabel>Follow Up Date</ControlLabel><HelpBlock>Example: 2016-11-09</HelpBlock>
+                  <FormControl type="date" onChange={this.handleChange}/>
+                </FormGroup>
+              :
+                <FormGroup controlId="follow_up_date">
+                  <ControlLabel>Follow Up Date</ControlLabel><HelpBlock>Example: 11/09/2016</HelpBlock>
+                  <FormControl type="date" onChange={this.handleChange}/>
+                </FormGroup>
+            }
             <FormGroup controlId="follow_up_description">
               <ControlLabel>Follow Up Description</ControlLabel>
               <FormControl componentClass="textarea" placeholder="Enter Follow Up Description" onChange={this.handleChange}/>
@@ -363,10 +371,18 @@ export default class NewCasenoteModal extends React.Component{
             <FormGroup controlId="closure_protection_order">
               <Checkbox id="closure_protection_order" onChange={this.handleChange} defaultChecked={this.props.support_period.closure != null ? this.props.support_period.closure.protection_order : false }>Has Protection Order</Checkbox>
             </FormGroup>
-            <FormGroup controlId="closure_protection_expiration_date">
-              <ControlLabel>Protection Expiration Date</ControlLabel><HelpBlock>Example: 11/09/2016</HelpBlock>
-              <FormControl type="date" defaultValue={this.props.support_period.closure != null ? this.props.support_period.closure.protection_expiration_date : ''} onChange={this.handleChange}/>
-            </FormGroup>
+            {
+              Constants.IsFirefox ?
+                <FormGroup controlId="closure_protection_expiration_date">
+                  <ControlLabel>Protection Expiration Date</ControlLabel><HelpBlock>Example: 2016-11-09</HelpBlock>
+                  <FormControl type="date" defaultValue={this.props.support_period.closure != null ? this.props.support_period.closure.protection_expiration_date : ''} onChange={this.handleChange}/>
+                </FormGroup>
+              :
+                <FormGroup controlId="closure_protection_expiration_date">
+                  <ControlLabel>Protection Expiration Date</ControlLabel><HelpBlock>Example: 11/09/2016</HelpBlock>
+                  <FormControl type="date" defaultValue={this.props.support_period.closure != null ? this.props.support_period.closure.protection_expiration_date : ''} onChange={this.handleChange}/>
+                </FormGroup>
+            }
           </form>
         </Modal.Body>
         <Modal.Footer>

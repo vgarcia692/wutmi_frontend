@@ -250,7 +250,18 @@ export default class NewClientForm extends React.Component{
             <FormControl id={'child'+x+'first_name'} type="text" placeholder="First Name"/>
             <FormControl id={'child'+x+'last_name'} type="text" placeholder="Last Name"/>
             <ControlLabel>Date of Birth</ControlLabel>
-            <FormControl id={'child'+x+'dob'} type="date"/>
+            {
+              Constants.IsFirefox ?
+                <FormGroup id={'child'+x+'dob'}>
+                  <ControlLabel>Child Date of Birth</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)"/>
+                </FormGroup>
+              :
+                <FormGroup id={'child'+x+'dob'}>
+                  <ControlLabel>Child Date of Birth</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange}/>
+                </FormGroup>
+            }
             <FormControl id={'child'+x+'location'} type="text" placeholder="Child Location"/>
             <ControlLabel>Relationship to Client</ControlLabel>
             <FormControl id={'child'+x+'relationship'} defaultValue={26} componentClass="select">
@@ -343,10 +354,18 @@ export default class NewClientForm extends React.Component{
                   <ControlLabel>Client Last Name</ControlLabel>
                   <FormControl type="text" placeholder="Enter Last Name" onChange={this.handleChange}/>
                 </FormGroup>
-                <FormGroup controlId="dob">
-                  <ControlLabel>Client Date of Birth</ControlLabel>
-                  <FormControl type="date" onChange={this.handleChange}/>
-                </FormGroup>
+                {
+                  Constants.IsFirefox ?
+                    <FormGroup controlId="dob">
+                      <ControlLabel>Client Date of Birth</ControlLabel>
+                      <FormControl type="date" onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)"/>
+                    </FormGroup>
+                  :
+                    <FormGroup controlId="dob">
+                      <ControlLabel>Client Date of Birth</ControlLabel>
+                      <FormControl type="date" onChange={this.handleChange}/>
+                    </FormGroup>
+                }
                 <FormGroup controlId="nationality">
                   <ControlLabel>Select Client Nationality</ControlLabel>
                   <FormControl value={this.state.client['nationality']['pk']} componentClass="select" onChange={this.handleChange}>

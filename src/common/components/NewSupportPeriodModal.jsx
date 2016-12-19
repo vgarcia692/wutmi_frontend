@@ -243,7 +243,7 @@ export default class NewCasefileModal extends React.Component{
     var formData = new FormData();
     formData.append('referral_form', document.getElementById('referral_form').files[0]);
 
-    var url = 'http://localhost:8000/supportperiods/'+supportperiodId+'/set_referral_form/';
+    var url = Constants.API_URL + '/supportperiods/'+supportperiodId+'/set_referral_form/';
     
     axios({
       method: 'patch',

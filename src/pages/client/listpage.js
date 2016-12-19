@@ -35,7 +35,6 @@ export default class ClientListPage extends React.Component {
         const results = response.data.results;
         var data = [];
         results.forEach(function(client,index) {
-
           data.push(
             <tr key={index}>
               <th>{index + 1}</th>

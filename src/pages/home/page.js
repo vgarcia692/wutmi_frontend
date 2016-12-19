@@ -39,18 +39,17 @@ export default class HomePage extends React.Component {
 
   componentWillMount() {
     // Authenticate User
-    var authTimer = setInterval(function() {
-      if(Cookie.checkCookie('token') == false) {
-        clearInterval(authTimer);
-        browserHistory.push('/');
-      }
-    }, 15000);
+    // var authTimer = setInterval(function() {
+    //   if(Cookie.checkCookie('token') == false) {
+    //     clearInterval(authTimer);
+    //     browserHistory.push('/');
+    //   }
+    // }, 5000);
 
     var mql = window.matchMedia(`(min-width: 800px)`);
     mql.addListener(this.mediaQueryChanged);
     this.setState({mql: mql, docked: mql.matches});
   }
-
 
   componentWillUnmount() {
     this.state.mql.removeListener(this.mediaQueryChanged);
@@ -73,7 +72,7 @@ export default class HomePage extends React.Component {
   }
 
   logout = (() => {
-    Cookie.getCookie('token').removeItem('token');
+    document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     browserHistory.push('/');
   })
 

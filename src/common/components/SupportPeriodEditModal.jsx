@@ -221,10 +221,18 @@ export default class CasefileEditModal extends React.Component{
         </Modal.Header>
         <Modal.Body>
           <form>
-            <FormGroup controlId="date_of_referral">
-              <ControlLabel>Date of Referral</ControlLabel>
-              <FormControl type="date" onChange={this.handleChange} defaultValue={this.props.supportperiod.date_of_referral}/>
-            </FormGroup>
+            {
+              Constants.IsFirefox ?
+                <FormGroup id="date_of_referral">
+                  <ControlLabel>Date of Referral</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)" defaultValue={this.props.supportperiod.date_of_referral}/>
+                </FormGroup>
+              :
+                <FormGroup id="date_of_referral">
+                  <ControlLabel>Date of Referral</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange} defaultValue={this.props.supportperiod.date_of_referral}/>
+                </FormGroup>
+            }
             <FormGroup controlId="referrer">
               <ControlLabel>Referrer</ControlLabel>
               <FormControl defaultValue={this.props.supportperiod.referrer.pk} componentClass="select" onChange={this.handleChange}>
@@ -253,10 +261,18 @@ export default class CasefileEditModal extends React.Component{
                 {this.state.injuries}
               </FormControl>
             </FormGroup>
-            <FormGroup controlId="protection_expiration_date_at_referral">
-              <ControlLabel>Date of Referral</ControlLabel>
-              <FormControl type="date" onChange={this.handleChange} defaultValue={this.props.supportperiod.expiration_date}/>
-            </FormGroup>
+            {
+              Constants.IsFirefox ?
+                <FormGroup controlId="protection_expiration_date_at_referral">
+                  <ControlLabel>Protection Order Expiration Date</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)" defaultValue={this.props.supportperiod.expiration_date}/>
+                </FormGroup>
+              :
+                <FormGroup controlId="protection_expiration_date_at_referral">
+                  <ControlLabel>Protection Order Expiration Date</ControlLabel>
+                  <FormControl type="date" onChange={this.handleChange} defaultValue={this.props.supportperiod.expiration_date}/>
+                </FormGroup>
+            }
           </form>
         </Modal.Body>
         <Modal.Footer>

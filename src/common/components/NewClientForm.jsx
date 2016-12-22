@@ -249,7 +249,6 @@ export default class NewClientForm extends React.Component{
           <FormGroup>
             <FormControl id={'child'+x+'first_name'} type="text" placeholder="First Name"/>
             <FormControl id={'child'+x+'last_name'} type="text" placeholder="Last Name"/>
-            <ControlLabel>Date of Birth</ControlLabel>
             {
               Constants.IsFirefox ?
                 <FormGroup id={'child'+x+'dob'}>
@@ -366,6 +365,18 @@ export default class NewClientForm extends React.Component{
                       <FormControl type="date" onChange={this.handleChange}/>
                     </FormGroup>
                 }
+                <FormGroup controlId="address">
+                  <ControlLabel>Client Address</ControlLabel>
+                  <FormControl type="text" placeholder="Enter Address" onChange={this.handleChange}/>
+                </FormGroup>
+                <FormGroup controlId="phone">
+                  <ControlLabel>Client Phone</ControlLabel>
+                  <FormControl type="text" placeholder="Enter Phone" onChange={this.handleChange}/>
+                </FormGroup>
+                <FormGroup controlId="email">
+                  <ControlLabel>Client Email</ControlLabel>
+                  <FormControl type="text" placeholder="Enter Email" onChange={this.handleChange}/>
+                </FormGroup>
                 <FormGroup controlId="nationality">
                   <ControlLabel>Select Client Nationality</ControlLabel>
                   <FormControl value={this.state.client['nationality']['pk']} componentClass="select" onChange={this.handleChange}>

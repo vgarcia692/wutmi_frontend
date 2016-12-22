@@ -5,6 +5,7 @@ import styles from './style.css';
 import CustomAxios from '../../common/components/CustomAxios';
 import LoadingGifModal from '../../common/components/LoadingGifModal';
 import NewCasenoteModal from '../../common/components/NewCasenoteModal';
+import EditCasenoteModal from '../../common/components/EditCasenoteModal';
 import CasenoteDescriptionModal from '../../common/components/CasenoteDescriptionModal';
 import SupportPeriodEditModal from '../../common/components/SupportPeriodEditModal';
 import CloseSupportPeriodModal from '../../common/components/CloseSupportPeriodModal';
@@ -23,10 +24,12 @@ export default class SupportPeriodDetailPage extends React.Component {
       modalShow: false,
       descriptionShow: false,
       editFormShow: false,
+      editCasenoteModalShow: false,
       closeFormShow: false,
       case_note_description: '',
       follow_up_description: '',
       case_closed: false,
+      editingCasenote: {},
       
       supportperiod: {
         pk: props.params.pk,
@@ -55,7 +58,9 @@ export default class SupportPeriodDetailPage extends React.Component {
     }
 
     this.showNewCasenoteModal = this.showNewCasenoteModal.bind(this);
+    this.showEditCasenoteModal = this.showEditCasenoteModal.bind(this);
     this.closeCasenoteModal = this.closeCasenoteModal.bind(this);
+    this.closeEditCasenoteModal = this.closeEditCasenoteModal.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.showLoading = this.showLoading.bind(this);
     this.hideLoading = this.hideLoading.bind(this);
@@ -79,7 +84,6 @@ export default class SupportPeriodDetailPage extends React.Component {
         if (response.data.closure.closure_date != null) {
           this.setState({ case_closed: true });
         }
-        // console.log(this.state.supportperiod);
         this.hideLoading()
       })
       .catch((error) => {
@@ -93,9 +97,23 @@ export default class SupportPeriodDetailPage extends React.Component {
     }))
   }
 
+  showEditCasenoteModal = ((e) => {
+    var casenote = this.state.supportperiod.casenote_set[parseInt(e.target.id)];
+    this.setState(() => ({
+      editCasenoteModalShow: true,
+      editingCasenote: casenote
+    }))
+  })
+
   closeCasenoteModal() {
     this.setState(() => ({
       modalShow: false
+    }))
+  }
+
+  closeEditCasenoteModal() {
+    this.setState(() => ({
+      editCasenoteModalShow: false
     }))
   }
 
@@ -103,7 +121,8 @@ export default class SupportPeriodDetailPage extends React.Component {
     this.setState(() => ({
       modalShow: false,
       editFormShow: false,
-      closeFormShow: false
+      closeFormShow: false,
+      editCasenoteModalShow: false
     }))
 
     // Refresh data from Database
@@ -180,7 +199,18 @@ export default class SupportPeriodDetailPage extends React.Component {
                       <td>
                         {
                             this.state.supportperiod['referral_form'] ?
-                              <a href={Constants.API_URL+"/document/"+Cookie.getCookie('token')+"/referral/"+this.state.supportperiod.pk+'/'}>view</a>
+                              <a href={Constants.API_URL+"/document/"+Cookie.getCookie('token').split(' ')[1]+"/referral/"+this.state.supportperiod.pk+'/'}>view</a>
+                            :
+                              ''
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Closure Form</strong></td>
+                      <td>
+                        {
+                            this.state.supportperiod['closure']['closure_form'] ?
+                              <a href={Constants.API_URL+"/document/"+Cookie.getCookie('token').split(' ')[1]+"/closure/"+this.state.supportperiod.pk+'/'}>view</a>
                             :
                               ''
                         }
@@ -265,7 +295,7 @@ export default class SupportPeriodDetailPage extends React.Component {
                 <Row><Button bsStyle="success" className={styles.addButton} onClick={this.showNewCasenoteModal}>+</Button></Row>
                   {
                     this.state.supportperiod['casenote_set'].map((casenote,index) => (
-                      <Panel key={index} header={dateFormat(casenote['created_at'], 'fullDate')}>
+                      <Panel key={index} header={dateFormat(casenote['date'], 'fullDate')}>
                         <p>
                           {
                             casenote.casenotedocument_set.map((document,index) => (
@@ -280,7 +310,7 @@ export default class SupportPeriodDetailPage extends React.Component {
                         <p>{casenote.follow_up_description != null ? casenote.follow_up_description : ''}</p>
                         <i><p>{casenote.follow_up_date != null ? dateFormat(casenote['follow_up_date'], 'fullDate'): ''}</p></i> 
                       
-                        {/*<Button disabled>Edit</Button>*/}
+                        <Button id={index} onClick={this.showEditCasenoteModal}>Edit</Button>
                       </Panel>
                     ))
                   }
@@ -387,6 +417,7 @@ export default class SupportPeriodDetailPage extends React.Component {
           label='Close Support Period' 
         />
         <NewCasenoteModal closure={this.state.supportperiod.closure} show={this.state.modalShow} onHide={this.closeCasenoteModal} onAdd={()=>this.refreshData()} support_period={this.state.supportperiod} onAdd={()=>this.refreshData()} />
+        <EditCasenoteModal editing_casenote={this.state.editingCasenote} closure={this.state.supportperiod.closure} show={this.state.editCasenoteModalShow} onHide={this.closeEditCasenoteModal} onAdd={()=>this.refreshData()} support_period={this.state.supportperiod} onAdd={()=>this.refreshData()} />
         <CasenoteDescriptionModal show={this.state.descriptionShow} onHide={this.hideDescription} case_note_description={this.state.case_note_description} follow_up_description={this.state.follow_up_description}/>
         <LoadingGifModal show={this.state.loadingShow} onHide={this.hideLoading} label='Loading Referral Details...'/>
       </div>

@@ -203,9 +203,29 @@ export default class ClientEditModal extends React.Component{
         </Modal.Header>
         <Modal.Body>
           <form encType="multipart/form-data" id='editclientform'>
-            <FormGroup controlId="dob">
-              <ControlLabel>Date of Birth</ControlLabel><HelpBlock>Example: 11/09/2016</HelpBlock>
-              <FormControl type="date" defaultValue={this.props.client.dob} onChange={this.handleChange}/>
+            {
+              Constants.IsFirefox ?
+                <FormGroup controlId="dob">
+                  <ControlLabel>Date of Birth</ControlLabel>
+                  <FormControl type="date" defaultValue={this.props.client.dob} onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)"/>
+                </FormGroup>
+              :
+                <FormGroup controlId="dob">
+                  <ControlLabel>Date of Birth</ControlLabel>
+                  <FormControl type="date" defaultValue={this.props.client.dob} onChange={this.handleChange}/>
+                </FormGroup>
+            }
+            <FormGroup controlId="address">
+              <ControlLabel>Client Address</ControlLabel>
+              <FormControl type="text" defaultValue={this.props.client.address} onChange={this.handleChange}/>
+            </FormGroup>
+            <FormGroup controlId="phone">
+              <ControlLabel>Client Phone</ControlLabel>
+              <FormControl type="text" defaultValue={this.props.client.phone} onChange={this.handleChange}/>
+            </FormGroup>
+            <FormGroup controlId="email">
+              <ControlLabel>Client Email</ControlLabel>
+              <FormControl type="text" defaultValue={this.props.client.email} onChange={this.handleChange}/>
             </FormGroup>
             <FormGroup controlId="nationality">
               <ControlLabel>Nationality</ControlLabel>
@@ -242,7 +262,12 @@ export default class ClientEditModal extends React.Component{
                         <FormControl id={'child-'+ch.pk+'-first_name'} type="text" defaultValue={ch.first_name} onChange={this.handleChange}/>
                         <FormControl id={'child-'+ch.pk+'-last_name'} type="text" defaultValue={ch.last_name} onChange={this.handleChange}/>
                         <ControlLabel>Date of Birth</ControlLabel>
-                        <FormControl id={'child-'+ch.pk+'-dob'} type="date" defaultValue={ch.dob} onChange={this.handleChange}/>
+                        {
+                          Constants.IsFirefox ?
+                              <FormControl id={'child-'+ch.pk+'-dob'} type="date" defaultValue={ch.dob} onChange={this.handleChange} placeholder="YYYY-MM-DD (ex. 2016-05-23)"/>
+                          :
+                              <FormControl id={'child-'+ch.pk+'-dob'} type="date" defaultValue={ch.dob} onChange={this.handleChange}/>
+                        }
                         <FormControl id={'child-'+ch.pk+'-location'} type="text" placeholder="Location" defaultValue={ch.location} onChange={this.handleChange}/>
                         <ControlLabel>Relationship to Client</ControlLabel>
                         <FormControl id={'child-'+ch.pk+'-relationship_to_client'} defaultValue={ch.relationship_to_client ? ch.relationship_to_client.pk : 0} componentClass="select" onChange={this.handleChange}>

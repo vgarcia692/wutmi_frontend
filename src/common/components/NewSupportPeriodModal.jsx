@@ -400,24 +400,24 @@ export default class NewCasefileModal extends React.Component{
                   </FormGroup>
                   {ExpirationDateForm()}
               </Tab>
-              <Tab eventKey={2} title='User of Violence'>
+              <Tab eventKey={2} title='User of Violence Details'>
                 <FormGroup controlId="user_of_violence_first_name">
-                  <ControlLabel>User of Violences First Name</ControlLabel>
+                  <ControlLabel>User of Violence First Name</ControlLabel>
                   <FormControl type="text" placeholder="Enter First Name" onChange={this.handleChange}/>
                 </FormGroup>
                 <FormGroup controlId="user_of_violence_last_name">
-                  <ControlLabel>User of Violences Last Name</ControlLabel>
+                  <ControlLabel>User of Violence Last Name</ControlLabel>
                   <FormControl type="text" placeholder="Enter Last Name" onChange={this.handleChange}/>
                 </FormGroup>
                 <FormGroup controlId="user_of_violence_gender">
-                  <ControlLabel>Select User of Violences Nationality</ControlLabel>
+                  <ControlLabel>Select User of Violence Gender</ControlLabel>
                   <FormControl value={this.state.supportperiod['user_of_violence'][0]['gender']} componentClass="select" onChange={this.handleChange}>
                     <option>Male</option>
                     <option>Female</option>
                   </FormControl>
                 </FormGroup>
                 <FormGroup controlId="user_of_violence_nationality">
-                  <ControlLabel>Select User of Violences Gender</ControlLabel>
+                  <ControlLabel>Select User of Violence Nationality</ControlLabel>
                   <FormControl value={this.state.supportperiod['user_of_violence'][0]['nationality']['pk']} componentClass="select" onChange={this.handleChange}>
                     {this.state.nationalities}
                   </FormControl>
@@ -427,6 +427,10 @@ export default class NewCasefileModal extends React.Component{
                   <FormControl value={this.state.supportperiod['user_of_violence'][0]['relationship_to_client']['pk']} componentClass="select" onChange={this.handleChange}>
                     {this.state.relationships}
                   </FormControl>
+                </FormGroup>
+                <FormGroup controlId="user_of_violence_other_details">
+                  <ControlLabel>Other Details</ControlLabel>
+                  <FormControl id="user_of_violence_other_details" componentClass="textarea" placeholder="Enter Other Details" onChange={this.handleChange}/>
                 </FormGroup>
               </Tab>
             </Tabs>

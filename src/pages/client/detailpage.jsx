@@ -64,7 +64,7 @@ export default class ClientDetailPage extends React.Component {
 
     this.showLoading = this.showLoading.bind(this);
     this.hideLoading = this.hideLoading.bind(this);
-    this.showEditFrom = this.showEditFrom.bind(this);
+    this.showEditForm = this.showEditForm.bind(this);
     this.hideEditForm = this.hideEditForm.bind(this);
     this.showNewSupportPeriodForm = this.showNewSupportPeriodForm.bind(this);
     this.hideNewSupportPeriodForm = this.hideNewSupportPeriodForm.bind(this);
@@ -114,11 +114,11 @@ export default class ClientDetailPage extends React.Component {
     });
   }
 
-  showEditFrom() {
+  showEditForm = (() => {
     this.setState({
       editFormShow: true
     });
-  }
+  })
 
   hideEditForm() {
     this.setState({
@@ -163,24 +163,11 @@ export default class ClientDetailPage extends React.Component {
           <td>{dateFormat(sp.date_of_referral, 'fullDate')}</td>
           <td>{sp.referrer['name']}</td>
           <td>{sp.risk_at_referral}</td>
-          <td>
-            {
-                sp.referral_form ?
-                  <a key={index} href={Constants.API_URL+ "/document/"+Cookie.getCookie('token').split(' ')[1]+"/referral/"+sp.pk+'/'}>view</a>
-                :
-                  ''
-            }
-          </td>
-          <td>{sp.closure_date}</td>
-          <td>
-            {
-              sp.closure_form ?
-                <a href={Constants.API_URL+ "/document/"+Cookie.getCookie('token').split(' ')[1]+"/closure/"+this.state.supportperiod.pk+'/'}>view</a>
-              :
-                ''
-            }
-          </td>
-          <td><Link to={"/home/supportperiod/"+sp.pk}>Open</Link></td>
+          <td>{sp.closure ? sp.closure.closure_date : ''}</td>
+          <td>{sp.closure ? sp.closure.closure_reason != null ? sp.closure.closure_reason.reason : ''  : ''}</td>
+          <td>{sp.closure ? sp.closure.risk_at_closure : ''}</td>
+          <td>{sp.closure ? sp.closure.closure_date != null ? 'Closed' : 'Open' : 'Open'}</td>
+          <td><Link to={"/home/supportperiod/"+sp.pk}>Record</Link></td>
         </tr>
     ));
     
@@ -189,15 +176,27 @@ export default class ClientDetailPage extends React.Component {
       <div className={styles.content}>
         <h1 className={styles.heading}>{this.state.client['first_name']} {this.state.client['last_name']}</h1>
         <Tabs onSelect={this.handleTabSelect} defaultActiveKey={(sessionStorage.getItem('clientTabKey')!=null) ? parseInt(sessionStorage.getItem('clientTabKey')) : 1} id='uncontrolled-tab'>
-            <Tab eventKey={1} title='Client'>
+            <Tab eventKey={1} title='Client Details'>
               <div className={styles.content}>
-                <Button bsStyle="info" className={styles.addButton} onSelect={this.showEditFrom}>Edit</Button>
+                <Button bsStyle="info" className={styles.addButton} onClick={this.showEditForm}>Edit</Button>
                 <h4>Client</h4>
                 <Table striped bordered hover>
                   <tbody>
                     <tr>
                       <td><strong>Date of Birth:</strong></td>
                       <td>{dateFormat(this.state.client['dob'], 'fullDate')}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Address:</strong></td>
+                      <td>{this.state.client['address']}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Phone:</strong></td>
+                      <td>{this.state.client['phone']}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Email:</strong></td>
+                      <td>{this.state.client['email']}</td>
                     </tr>
                     <tr>
                       <td><strong>Nationality:</strong></td>
@@ -251,6 +250,12 @@ export default class ClientDetailPage extends React.Component {
                           <div key={index}>
                             <u>User of Violence</u>
                             <p>{uov.first_name} {uov.last_name}</p>
+                            {
+                              uov.other_details ?
+                                <i><p>{uov.other_details}</p></i>
+                              :
+                                ''
+                            }
                           </div>
                         ))
                       }
@@ -273,9 +278,10 @@ export default class ClientDetailPage extends React.Component {
                       <td>Date of Referral</td>
                       <td>Referrer</td>
                       <td>Risk at Referral</td>
-                      <td>Referral Form</td>
                       <td>Closure Date</td>
-                      <td>Closure Form</td>
+                      <td>Closure Reason</td>
+                      <td>Risk at Closure</td>
+                      <td>Status</td>
                       <td></td>
                     </tr>
                   </thead>

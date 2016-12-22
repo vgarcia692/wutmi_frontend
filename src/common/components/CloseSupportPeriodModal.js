@@ -94,6 +94,7 @@ export default class CloseSupportPeriodModal extends React.Component{
 
 
   postClosureUpdate() {
+    document.body.style.cursor='wait';
     if (this.state.closure.closure_date != '') {
       const axios = Axios;
       var closure = this.state.closure;
@@ -105,11 +106,19 @@ export default class CloseSupportPeriodModal extends React.Component{
       })
       .then(function(response) {
         if (response.status==200) { 
+          var closure_form = document.getElementById('closure_form')
+          if (closure_form.value == "") {
             this.props.onAdd();
+            this.body.style.cursor='default';
+          } else {
+            this.postClosureForm();
+            this.props.onAdd();
+            document.body.style.cursor='default';
+          }
         } 
       }.bind(this))
       .catch(function(error) {
-        alert('Unable to edit Support Period. Server Error');
+        alert('Unable to close Support Period. Server Error');
         console.log(error.response.data);
       })
     } else {
@@ -117,6 +126,31 @@ export default class CloseSupportPeriodModal extends React.Component{
     }
     
   }
+
+  postClosureForm = (() => {
+    const axios = Axios;    
+
+    var formData = new FormData();
+    formData.append('closure_form', document.getElementById('closure_form').files[0]);
+
+    var url = Constants.API_URL + '/closures/'+this.props.closure.pk+'/set_closure_form/';
+    
+    axios({
+      method: 'patch',
+      url: url,
+      headers: {'Authorization': Cookie.getCookie('token'), 'Content-Type': 'multipart/form-data'},
+      data : formData
+    })
+    .then(function(response) {
+      // Refresh the form values
+      this.props.onAdd();
+      document.body.style.cursor='default';    
+    }.bind(this))
+    .catch(function(error) {
+      alert('Closure closed but referral form unable to upload.');
+      console.log(error.response.data);
+    })
+  })
 
 
   render() {
@@ -128,7 +162,7 @@ export default class CloseSupportPeriodModal extends React.Component{
     return (
       <Modal show={this.props.show} onHide={this.props.onHide} bsSize="large" aria-labelledby="contained-modal-title-lg">
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-lg">Closeing Form</Modal.Title>
+          <Modal.Title id="contained-modal-title-lg">Closure Form</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>
@@ -161,10 +195,10 @@ export default class CloseSupportPeriodModal extends React.Component{
               </FormControl>
             </FormGroup>
             <FormGroup controlId="client_knows_case_close">
-              <Checkbox id="client_knows_case_close" onChange={this.handleChange}>Does the client know their case is being closed?</Checkbox>
+              <Checkbox id="client_knows_case_close" onChange={this.handleChange}>Client knows their case is being closed.</Checkbox>
             </FormGroup>
             <FormGroup controlId="client_agree_case_close">
-              <Checkbox id="client_agree_case_close" onChange={this.handleChange}>Does the client agree to their case being closed?</Checkbox>
+              <Checkbox id="client_agree_case_close" onChange={this.handleChange}>Client agrees to their case being closed.</Checkbox>
             </FormGroup>
           </form>
         </Modal.Body>

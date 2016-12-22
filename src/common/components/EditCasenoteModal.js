@@ -6,7 +6,7 @@ const Constants = require('../Constants.js')
 const Cookie = require('../Cookie.js');
 
 
-export default class NewCasenoteModal extends React.Component{
+export default class EditCasenoteModal extends React.Component{
   constructor(props) {
     super(props)
     this.state = {
@@ -15,17 +15,11 @@ export default class NewCasenoteModal extends React.Component{
       violences: [],
       currentInjuries: [],
       currentViolences: [],
-      casenote: {
-        'support_mode': {
-          'pk':1
-        },
-        'description': '',
-        'service_type_offered': []
-      },
       support_period_id: 0,
       closure: {
-        protection_order: this.props.support_period.closure
-      }
+        protection_order: this.props.support_period.closure.protection_order
+      },
+      casenote: {}
     }
 
     this.getDataOptions = this.getDataOptions.bind(this);
@@ -77,7 +71,7 @@ export default class NewCasenoteModal extends React.Component{
   
     axios.all([getServices(), getInjuries(), getViolences(), getSupportModes()])
     .then(axios.spread(function (s, i, v, sm) {
-      var services = s.data.results.map(s => <option key={s.pk} value={s.pk}>{s.type}</option>);
+      var services = s.data.results;
       var injuries = i.data.results;
       var violences = v.data.results;
       var support_modes = sm.data.results.map(sm => <option key={sm.pk} value={sm.pk}>{sm.type}</option>);
@@ -95,7 +89,6 @@ export default class NewCasenoteModal extends React.Component{
     const value = e.target.value;
     if (id.includes('closure')) {
       if(e.target.type == 'checkbox') {
-        console.log(e.target.checked);
         e.target.checked ? closure[id.substr(8)]=true : closure[id.substr(8)]=false;
       } else if (e.target.type=='select-multiple') {
         var selected = this.getMultipleSelectedOptions(e.target);
@@ -108,7 +101,7 @@ export default class NewCasenoteModal extends React.Component{
       if (e.target.type=='select-multiple') {
         var selected = this.getMultipleSelectedOptions(e.target);
         casenote[id] = selected;
-      } else if (e.target.type=='select') {
+      } else if (e.target.type=='select-one') {
         casenote[id] = {'pk':value};
       } else {
         casenote[id] = value;
@@ -174,15 +167,13 @@ export default class NewCasenoteModal extends React.Component{
     
     //Send info without the file first to get the casenote id
     axios({
-      method: 'post',
-      url: Constants.API_URL + '/casenotes/',
+      method: 'patch',
+      url: Constants.API_URL + '/casenotes/' + this.props.editing_casenote.pk + '/',
       headers: {'Authorization': Cookie.getCookie('token')},
       data : this.state.casenote
     })
     .then(function(response) {
-      if (response.status==201) {
-        // Get casenote id from reponse
-        this.setState({ casenoteId: response.data.pk });
+      if (response.status==200) {
         // Check if the there are files if so then post to database
         var listnum = document.getElementById('casenotedocument_set').files.length;
         if (listnum > 0) {
@@ -200,26 +191,23 @@ export default class NewCasenoteModal extends React.Component{
 
         // Refresh the form values
         const casenote = Object.assign({}, this.state.casenote);
-        casenote['support_period_id'] = parseInt(this.props.support_period_id);
-        casenote['description'] = '';
-        casenote['service_type_offered'] = '';
-        
         this.setState({ casenote });
+        this.props.onAdd();
+        document.body.style.cursor='default';
       }
     }.bind(this))
     .catch(function(error) {
       alert('Unable to add Case Note. Server Error.');
       console.log(error.response.data);
     })
-    // console.log(casenote);
-    
+
   }
 
   postDocuments() {
     const axios = Axios;    
 
     var formData = new FormData();
-    formData.append('casenote',  this.state.casenoteId);
+    formData.append('casenote',  this.props.editing_casenote.pk);
 
     var listnum = document.getElementById('casenotedocument_set').files.length;
     for (var x = 0; x < listnum; x++) {
@@ -282,6 +270,7 @@ export default class NewCasenoteModal extends React.Component{
   render() {  
     var injuryOptions = [];
     var violenceOptions = [];
+    var serviceOptions = [];
     if (this.props.closure != null && this.props.closure.pk > 0) {
       var currentInjuriesIds = this.props.closure.injuries.map((i) => {
         return i.pk
@@ -301,19 +290,34 @@ export default class NewCasenoteModal extends React.Component{
       
       for (var violence in this.state.violences) {
         if (currentViolencesIds.includes(this.state.violences[violence]['pk'])) {
-          violenceOptions.push(<option key={this.state.violences[violence]['pk']} selected disabled value={this.state.violences[inj]['pk']}
-          value={this.state.violences[inj]['pk']}>{this.state.violences[violence]['type']}</option>);
+          violenceOptions.push(<option key={this.state.violences[violence]['pk']} selected disabled value={this.state.violences[violence]['pk']}
+          value={this.state.violences[violence]['pk']}>{this.state.violences[violence]['type']}</option>);
         } else {
-          violenceOptions.push(<option key={this.state.violences[violence]['pk']} value={this.state.violences[inj]['pk']}
-          value={this.state.violences[inj]['pk']}>{this.state.violences[violence]['type']}</option>);
+          violenceOptions.push(<option key={this.state.violences[violence]['pk']} value={this.state.violences[violence]['pk']}
+          value={this.state.violences[violence]['pk']}>{this.state.violences[violence]['type']}</option>);
         }
       }
     }
 
+    if (this.props.editing_casenote) {
+      if (this.props.editing_casenote.pk > 0) {
+        var currentServiceId = this.props.editing_casenote.service_type_offered.map((s) => {
+          return s.pk
+        });
+        for (var service in this.state.services) {
+          if (currentServiceId.includes(this.state.services[service]['pk'])) {
+            serviceOptions.push(<option key={this.state.services[service]['pk']} selected value={this.state.services[service]['pk']}>{this.state.services[service]['type']}</option>);
+          } else {
+            serviceOptions.push(<option key={this.state.services[service]['pk']} value={this.state.services[service]['pk']}>{this.state.services[service]['type']}</option>);
+          }
+        }
+      }  
+    }
+    
     return (
       <Modal show={this.props.show} onHide={this.props.onHide} bsSize="large" aria-labelledby="contained-modal-title-lg">
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-lg">Add New CaseNote</Modal.Title>
+          <Modal.Title id="contained-modal-title-lg">Edit CaseNote</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>
@@ -321,45 +325,45 @@ export default class NewCasenoteModal extends React.Component{
               Constants.IsFirefox ?
                 <FormGroup controlId="date">
                   <ControlLabel>Date</ControlLabel><HelpBlock>Example: 2016-11-09</HelpBlock>
-                  <FormControl type="date" onChange={this.handleChange}/>
+                  <FormControl defaultValue={this.props.editing_casenote.date} type="date" onChange={this.handleChange}/>
                 </FormGroup>
               :
                 <FormGroup controlId="date">
                   <ControlLabel>Date</ControlLabel><HelpBlock>Example: 11/09/2016</HelpBlock>
-                  <FormControl type="date" onChange={this.handleChange}/>
+                  <FormControl defaultValue={this.props.editing_casenote.date} type="date" onChange={this.handleChange}/>
                 </FormGroup>
             }
             <FormGroup controlId="description">
               <ControlLabel>Case Note</ControlLabel>
-              <FormControl componentClass="textarea" placeholder="Enter Case Note" onChange={this.handleChange}/>
+              <FormControl defaultValue={this.props.editing_casenote.description} componentClass="textarea" onChange={this.handleChange}/>
             </FormGroup>
             <FormGroup controlId="support_mode">
               <ControlLabel>Select Support Modes</ControlLabel>
-              <FormControl componentClass="select" defaultValue={1} onChange={this.handleChange}>
+              <FormControl componentClass="select" defaultValue={this.props.editing_casenote.support_mode ? this.props.editing_casenote.support_mode.pk ? this.props.editing_casenote.support_mode.pk : 1 : 1} onChange={this.handleChange}>
                 {this.state.support_modes}
               </FormControl>
             </FormGroup>
             <FormGroup controlId="service_type_offered">
               <ControlLabel>Select Servieces Offered</ControlLabel>
               <FormControl componentClass="select" onChange={this.handleChange} multiple>
-                {this.state.services}
+                {serviceOptions}
               </FormControl>
             </FormGroup>
             {
               Constants.IsFirefox ?
                 <FormGroup controlId="follow_up_date">
                   <ControlLabel>Follow Up Date</ControlLabel><HelpBlock>Example: 2016-11-09</HelpBlock>
-                  <FormControl type="date" onChange={this.handleChange}/>
+                  <FormControl defaultValue={this.props.editing_casenote.follow_up_date} type="date" onChange={this.handleChange}/>
                 </FormGroup>
               :
                 <FormGroup controlId="follow_up_date">
                   <ControlLabel>Follow Up Date</ControlLabel><HelpBlock>Example: 11/09/2016</HelpBlock>
-                  <FormControl type="date" onChange={this.handleChange}/>
+                  <FormControl defaultValue={this.props.editing_casenote.follow_up_date} type="date" onChange={this.handleChange}/>
                 </FormGroup>
             }
             <FormGroup controlId="follow_up_description">
               <ControlLabel>Follow Up Description</ControlLabel>
-              <FormControl componentClass="textarea" placeholder="Enter Follow Up Description" onChange={this.handleChange}/>
+              <FormControl defaultValue={this.props.editing_casenote.follow_up_description} componentClass="textarea" onChange={this.handleChange}/>
             </FormGroup>
             <FormGroup controlId="casenotedocument_set">
               <ControlLabel>Documents</ControlLabel>

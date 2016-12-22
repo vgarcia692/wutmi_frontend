@@ -30,6 +30,9 @@ export default class LoginPage extends React.Component {
   })
 
   login = (() => {
+    if (Cookie.getCookie('token')) {
+      document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
     axios.post('/api-token-auth/', {
       username: this.state.user.username,
       password: this.state.user.password
@@ -45,11 +48,14 @@ export default class LoginPage extends React.Component {
     })
     .catch(function (error) {
       alert('Unable to Login with usernae and password.');
-      console.log(error);
+      console.log(error.response.data);
     });
   })
 
   enterKeyLogin = ((e) => {
+    if (Cookie.getCookie('token')) {
+      document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
     var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
     if (charCode == 13) {
       axios.post('/api-token-auth/', {
